@@ -1,0 +1,19 @@
+{
+  "name": "MyTasks - A Simple To-Do App Built for Focus",
+  "short_name": "MyTasks",
+  "description": "A simple to-do app and minimalist task manager. Capture a task in one keystroke and sync across devices.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#292929",
+  "theme_color": "#292929",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

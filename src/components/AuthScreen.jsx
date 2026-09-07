@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { CheckCircle2, MailCheck } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, MailCheck } from 'lucide-react'
 import { auth } from '../lib/api'
 import { Input } from './ui'
 
 // Gate in front of the app: every /api route below /auth needs a session.
 // Three modes share the one form — log in, sign up, and request a reset link.
-export default function AuthScreen({ onAuthed }) {
-  const [mode, setMode] = useState('login')
+// `initialMode` is which of them the landing page's button asked for; `onBack`
+// returns there, since the marketing page is now what "/" shows when signed out.
+export default function AuthScreen({ onAuthed, initialMode = 'login', onBack }) {
+  const [mode, setMode] = useState(initialMode)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -91,9 +93,21 @@ export default function AuthScreen({ onAuthed }) {
         onSubmit={submit}
         className="w-full max-w-sm rounded-2xl border border-blush bg-surface p-7 shadow-xl shadow-black/40"
       >
-        <div className="mb-6 flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-mauve" />
-          <span className="text-sm font-semibold tracking-wide">Tasks</span>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-mauve" />
+            <span className="text-sm font-semibold tracking-wide">MyTasks</span>
+          </div>
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-cream/55 transition-colors hover:bg-white/10 hover:text-cream"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Home
+            </button>
+          )}
         </div>
 
         <h1 className="text-xl font-semibold">{heading}</h1>

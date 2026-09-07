@@ -1,6 +1,20 @@
-// Thin fetch wrapper around the Express API.
-// Vite proxies /api to the server in dev, so requests stay same-origin and the
-// httpOnly auth cookie is sent automatically.
+// Axios client for the Express API.
+//
+// The API is addressed absolutely, through VITE_API_URL, rather than through a
+// dev-server proxy — the proxy only ever existed in `vite dev`, so the built
+// site had no way to reach the server at all.
+//
+// That makes requests cross-origin, so two things have to line up: this client
+// sends credentials, and the server must answer with its origin in
+// Access-Control-Allow-Origin and set the session cookie SameSite=None once the
+// two halves are on different sites. See server/src/middleware/auth.js.
+
+import axios from 'axios'
+
+// Trailing slash trimmed so the join below can't produce a double slash.
+// Empty (the default) means same-origin: correct when something in front of the
+// static host rewrites /api to the server.
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
 
 export class ApiError extends Error {
   constructor(status, message, details) {
@@ -10,30 +24,38 @@ export class ApiError extends Error {
   }
 }
 
+export const client = axios.create({
+  baseURL: `${API_URL}/api`,
+  // Sends and accepts the httpOnly session cookie on cross-origin calls.
+  withCredentials: true,
+  // No blanket Content-Type: it would make every GET a preflighted request.
+  // Axios sets application/json itself whenever there is a body.
+})
+
+// Axios rejects on any non-2xx, so both failure modes land here: `response` is
+// set when the server answered, absent when the request never arrived.
+function toApiError(err) {
+  const { response } = err
+  if (!response) {
+    const where = API_URL || window.location.origin
+    throw new ApiError(0, `Cannot reach the server at ${where}. Is it running?`)
+  }
+  const data = response.data
+  throw new ApiError(
+    response.status,
+    data?.error ?? `Request failed (${response.status})`,
+    data?.details,
+  )
+}
+
 async function request(path, { method = 'GET', body } = {}) {
-  let res
   try {
-    res = await fetch(`/api${path}`, {
-      method,
-      credentials: 'include',
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    })
-  } catch {
-    throw new ApiError(0, 'Cannot reach the server. Is it running on port 4000?')
+    const res = await client.request({ url: path, method, data: body })
+    // 204s come back as an empty string; the old fetch wrapper returned null.
+    return res.data === '' ? null : res.data
+  } catch (err) {
+    toApiError(err)
   }
-
-  // 204s and error pages may not carry JSON.
-  const data = await res.json().catch(() => null)
-
-  if (!res.ok) {
-    throw new ApiError(
-      res.status,
-      data?.error ?? `Request failed (${res.status})`,
-      data?.details,
-    )
-  }
-  return data
 }
 
 // --- shape translation -------------------------------------------------

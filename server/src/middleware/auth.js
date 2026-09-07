@@ -6,25 +6,35 @@ import { prisma } from '../lib/prisma.js'
 export const COOKIE_NAME = 'token'
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
 
+// The client calls this API from another origin, so the session cookie has to
+// survive a cross-site request.
+//
+// In production the two halves sit on different *.onrender.com subdomains, and
+// onrender.com is on the Public Suffix List — so they are different *sites*,
+// not just different origins, and SameSite=Lax would drop the cookie. None is
+// the only value a browser will send there, and it is only honoured alongside
+// Secure, which Render's HTTPS provides.
+//
+// Locally the client is on :5173 and this server on :4000. Ports play no part
+// in what counts as a site, so those are same-site and Lax still applies —
+// which matters, because Secure would fail over plain http.
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: env.isProd ? 'none' : 'lax',
+  secure: env.isProd,
+}
+
 export function signToken(userId) {
   return jwt.sign({ sub: userId }, env.jwtSecret, { expiresIn: '7d' })
 }
 
 export function setAuthCookie(res, token) {
-  res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: env.isProd,
-    maxAge: MAX_AGE_MS,
-  })
+  res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: MAX_AGE_MS })
 }
 
+// Must match the options the cookie was set with, or the browser keeps it.
 export function clearAuthCookie(res) {
-  res.clearCookie(COOKIE_NAME, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: env.isProd,
-  })
+  res.clearCookie(COOKIE_NAME, cookieOptions)
 }
 
 // Accepts the token from the httpOnly cookie or an Authorization header,

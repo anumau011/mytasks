@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import AuthScreen from './components/AuthScreen'
 import Dashboard from './components/Dashboard'
+import Landing from './components/Landing'
 import ResetPassword from './components/ResetPassword'
+import Seo from './components/Seo'
 import { auth } from './lib/api'
 
 // There is no router, so the reset link is read straight off the query string.
@@ -17,6 +19,9 @@ export default function App() {
   // undefined while the session cookie is being checked, null when signed out.
   const [user, setUser] = useState(undefined)
   const [resetToken, setResetToken] = useState(readResetToken)
+  // Where a signed-out visitor is: the marketing page, or the form they opened
+  // from it. Signed-in users never see either.
+  const [view, setView] = useState('landing')
 
   useEffect(() => {
     auth
@@ -35,14 +40,17 @@ export default function App() {
   // password on the account, whether or not this browser has a live session.
   if (resetToken) {
     return (
-      <ResetPassword
-        token={resetToken}
-        onDone={finishReset}
-        onCancel={() => {
-          clearResetToken()
-          setResetToken(null)
-        }}
-      />
+      <>
+        <Seo title="Reset your password — MyTasks" path="/" noindex />
+        <ResetPassword
+          token={resetToken}
+          onDone={finishReset}
+          onCancel={() => {
+            clearResetToken()
+            setResetToken(null)
+          }}
+        />
+      </>
     )
   }
 
@@ -54,14 +62,50 @@ export default function App() {
     )
   }
 
-  if (!user) return <AuthScreen onAuthed={setUser} />
+  if (!user) {
+    // The landing page is what "/" means to a crawler and to anyone who has
+    // not signed up yet; the auth form is one click behind it.
+    if (view === 'landing') {
+      return (
+        <Landing
+          onLogin={() => setView('login')}
+          onSignup={() => setView('register')}
+        />
+      )
+    }
+
+    return (
+      <>
+        <Seo
+          title={
+            view === 'register'
+              ? 'Create your MyTasks account'
+              : 'Log in to MyTasks'
+          }
+          path="/"
+          noindex
+        />
+        <AuthScreen
+          initialMode={view}
+          onAuthed={setUser}
+          onBack={() => setView('landing')}
+        />
+      </>
+    )
+  }
 
   const logout = async () => {
     await auth.logout().catch(() => {})
     setUser(null)
+    setView('landing')
   }
 
   // Keying on the user id drops every project from state when the account
   // changes, so one user's data can never flash in another's session.
-  return <Dashboard key={user.id} user={user} onLogout={logout} />
+  return (
+    <>
+      <Seo title="Your tasks — MyTasks" path="/" noindex />
+      <Dashboard key={user.id} user={user} onLogout={logout} />
+    </>
+  )
 }

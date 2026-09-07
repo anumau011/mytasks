@@ -2,12 +2,198 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tasks</title>
+
+    <!-- Primary -->
+    <title data-seo-default>MyTasks — A Simple To-Do App Built for Focus</title>
+    <meta
+      data-seo-default
+      name="description"
+      content="MyTasks is a simple to-do app and minimalist task manager for people tired of bloated project tools. Capture a task in one keystroke, track your day, and sync across devices. Free to use."
+    />
+    <link data-seo-default rel="canonical" href="https://myowntask.onrender.com/" />
+    <meta
+      data-seo-default
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="author" content="MyTasks" />
+    <meta name="theme-color" content="#292929" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta data-seo-default property="og:type" content="website" />
+    <meta data-seo-default property="og:site_name" content="MyTasks" />
+    <meta data-seo-default property="og:title" content="MyTasks — A Simple To-Do App Built for Focus" />
+    <meta
+      data-seo-default
+      property="og:description"
+      content="A distraction-free daily task tracker. Capture a task in one keystroke, track your day, and sync across devices. No setup, no clutter."
+    />
+    <meta data-seo-default property="og:url" content="https://myowntask.onrender.com/" />
+    <meta data-seo-default property="og:image" content="https://myowntask.onrender.com/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MyTasks — a simple to-do app built for focus" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta data-seo-default name="twitter:card" content="summary_large_image" />
+    <meta data-seo-default name="twitter:title" content="MyTasks — A Simple To-Do App Built for Focus" />
+    <meta
+      data-seo-default
+      name="twitter:description"
+      content="A distraction-free daily task tracker. Capture a task in one keystroke, track your day, and sync across devices."
+    />
+    <meta data-seo-default name="twitter:image" content="https://myowntask.onrender.com/og.svg" />
+
+    <!-- Structured data: the app itself, the site, and the FAQ answers that
+         mirror the FAQ section on the landing page. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://myowntask.onrender.com/#app",
+            "name": "MyTasks",
+            "alternateName": "MyTasks simple to-do app",
+            "url": "https://myowntask.onrender.com/",
+            "applicationCategory": "ProductivityApplication",
+            "applicationSubCategory": "Task Management",
+            "operatingSystem": "Any (web browser)",
+            "browserRequirements": "Requires JavaScript",
+            "description": "A simple to-do app and minimalist task manager. Capture tasks instantly, run a flat checklist or a to-do / in-progress / done board, and sync across every device.",
+            "image": "https://myowntask.onrender.com/og.svg",
+            "featureList": [
+              "One-keystroke task capture",
+              "Flat checklists for simple lists",
+              "To-do / in-progress / done board for bigger projects",
+              "Cross-device sync tied to your account",
+              "Distraction-free interface with no widgets or dashboards"
+            ],
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://myowntask.onrender.com/#website",
+            "url": "https://myowntask.onrender.com/",
+            "name": "MyTasks",
+            "description": "A simple to-do app built for focus.",
+            "inLanguage": "en-US",
+            "publisher": { "@id": "https://myowntask.onrender.com/#app" }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://myowntask.onrender.com/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is a simple to-do app?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "A simple to-do app is a task manager stripped to the essentials: capture a task, see your list, tick it off. It leaves out the timelines, dependencies, custom fields and dashboards that turn general project software into a second job."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is MyTasks free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Create an account and use it. There is no paid tier gating the features and no card required."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does MyTasks sync across devices?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Every task is saved to your account rather than to the browser, so the list you leave on your laptop is the list you open on your phone."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use MyTasks for bigger projects, not just a daily list?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Every project can be a flat checklist or a project split into sections with a to-do / in-progress / done board. You pick per project, so a grocery list stays a list and a launch plan gets a board."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to install anything?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. MyTasks runs in the browser on desktop and mobile. There is nothing to download and nothing to configure before your first task."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <script type="module" src="/src/main.jsx"></script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Crawlers and readers without JavaScript get the real pitch instead of a
+         blank page. Mirrors the headings on the rendered landing page. -->
+    <noscript>
+      <div
+        style="max-width: 44rem; margin: 0 auto; padding: 3rem 1.25rem; font-family: system-ui, -apple-system, sans-serif; color: #fff5f5; line-height: 1.65"
+      >
+        <h1 style="font-size: 2rem; line-height: 1.2">
+          MyTasks — a simple to-do app built for focus
+        </h1>
+        <p>
+          MyTasks is a <strong>minimalist task manager</strong> for people worn down by
+          bloated project software. Capture a task in one keystroke, keep a
+          <strong>daily task tracker</strong> that loads instantly, and get back to the
+          work itself. The app needs JavaScript to run, so please enable it.
+        </p>
+        <h2>Why a simple to-do app</h2>
+        <ul>
+          <li>
+            <strong>Lightning-fast capture.</strong> Type the task, press Enter. That is
+            the whole ritual.
+          </li>
+          <li>
+            <strong>Zero learning curve.</strong> Nothing to configure before your first
+            task.
+          </li>
+          <li>
+            <strong>Less mental clutter.</strong> One list, not eleven views of the same
+            list.
+          </li>
+          <li>
+            <strong>Cross-device sync.</strong> Tasks live on your account, not in one
+            browser.
+          </li>
+        </ul>
+        <h2>Two ways to work</h2>
+        <p>
+          Keep a project as a flat checklist, or split it into sections with a to-do /
+          in-progress / done board. You choose per project.
+        </p>
+        <h2>Read more</h2>
+        <p>
+          <a href="/blog/why-you-need-a-simple-to-do-app/" style="color: #e2b4bd">
+            Why You Need a Simple To-Do App to Reclaim Your Focus (And How to Choose One)
+          </a>
+        </p>
+      </div>
+    </noscript>
   </body>
 </html>

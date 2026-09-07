@@ -1,0 +1,27 @@
+# https://myowntask.onrender.com/robots.txt
+# MyTasks — simple to-do app / minimalist task manager
+
+User-agent: *
+Allow: /
+
+# Password-reset links are single-use and personal; never index them.
+Disallow: /*?token=
+Disallow: /*&token=
+
+# The API is not content.
+Disallow: /api/
+
+# Build assets add nothing to the index.
+Disallow: /assets/
+
+# Common SEO crawlers that hammer small sites for no benefit.
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+Sitemap: https://myowntask.onrender.com/sitemap.xml
