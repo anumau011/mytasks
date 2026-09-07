@@ -1,0 +1,102 @@
+// Todo app data model.
+// A Todo always belongs to a Project; for PROJECT-type projects it also
+// belongs to a Section. That keeps ownership checks to a single join.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProjectType {
+  SIMPLE
+  PROJECT
+}
+
+// Kanban columns. SIMPLE projects only ever use TODO and DONE.
+enum TodoStatus {
+  TODO
+  PROGRESS
+  DONE
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+
+  resetTokens PasswordResetToken[]
+}
+
+// Password reset links. Only the SHA-256 of the token is stored, so a leaked
+// database still can't be used to reset anyone's password. Rows are deleted the
+// moment they're used, and the cron sweep clears whatever expires unused.
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Project {
+  id        String      @id @default(cuid())
+  name      String
+  type      ProjectType @default(SIMPLE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sections Section[]
+  todos    Todo[]
+
+  @@index([userId])
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  title     String
+  hidden    Boolean  @default(false)
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  todos Todo[]
+
+  @@index([projectId])
+}
+
+model Todo {
+  id        String   @id @default(cuid())
+  text      String
+  status    TodoStatus @default(TODO)
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  sectionId String?
+  section   Section? @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([sectionId])
+}
