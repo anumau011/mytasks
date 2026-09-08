@@ -443,7 +443,10 @@ export default function Landing({ onLogin, onSignup }) {
             {FAQS.map(({ q, a }) => (
               <details key={q} className="group px-6 py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium marker:hidden">
-                  <h3 className="text-base font-medium">{q}</h3>
+                  {/* No text-base here: the --color-base theme token turns that
+                      class into a colour utility, which paints the heading in
+                      the page background. Headings inherit 1rem anyway. */}
+                  <h3 className="font-medium">{q}</h3>
                   <span
                     className="shrink-0 text-mauve transition-transform group-open:rotate-45"
                     aria-hidden="true"

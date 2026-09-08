@@ -49,7 +49,7 @@ export default function CreateProjectModal({ onClose, onCreate }) {
       >
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h2 className="text-base font-semibold">New project</h2>
+            <h2 className="font-semibold">New project</h2>
             <p className="mt-0.5 text-sm text-cream/55">
               Name it and pick how you want to work.
             </p>

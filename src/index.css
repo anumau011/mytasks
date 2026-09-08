@@ -8,6 +8,9 @@
   --color-ink: #4a4a4a;
 
   /* Dark surfaces, shaded down from the palette's #4a4a4a */
+  /* Careful: naming a colour `base` makes Tailwind emit .text-base as a
+     colour utility, shadowing the built-in font-size of the same name. Use
+     bg-base freely, but never text-base — it paints text the background. */
   --color-base: #292929;
   --color-surface: #353535;
   --color-raised: #414141;
